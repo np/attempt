@@ -42,9 +42,9 @@ instance Monad m => Monad (AttemptT m) where
         v <- mv
         case v of
             Success v' -> runAttemptT $ f v'
-            Failure st e -> return $ Failure st e
+            Failure e -> return $ Failure e
 instance (Exception e, Monad m) => MonadFailure e (AttemptT m) where
-    failure = AttemptT . return . Failure [] . SomeException
+    failure = AttemptT . return . Failure . SomeException
 instance (Monad m, Exception e) => WrapFailure e (AttemptT m) where
     wrapFailure f (AttemptT mv) = AttemptT $ liftM (wrapFailure f) mv
 instance MonadTrans AttemptT where
